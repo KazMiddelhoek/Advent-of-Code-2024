@@ -5,3 +5,8 @@ edition = "2021"
 
 [dependencies]
 ferris-says = "0.3.1"
+regex = "1.11.1"
+
+[[bin]]
+name="day03"
+path="Day 03/day03.rs"
