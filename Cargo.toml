@@ -34,3 +34,7 @@ path="Day 08/day08.rs"
 [[bin]]
 name="day09"
 path="Day 09/day09.rs"
+
+[[bin]]
+name="day10"
+path="Day 10/day10.rs"
