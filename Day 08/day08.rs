@@ -2,10 +2,13 @@ use std::collections::{HashMap, HashSet};
 use std::fs;
 
 fn part_one() {
-    let mut antinode_locs: HashSet<(usize, usize)> = HashSet::new();
-    let mut antenna_locs: HashMap<char, Vec<(usize, usize)>> = HashMap::new();
+    let mut antinode_locs: HashSet<(i32, i32)> = HashSet::new();
+    let mut antenna_locs: HashMap<char, Vec<(i32, i32)>> = HashMap::new();
     let input = fs::read_to_string("Day 08/input.txt").expect("");
-    let input_size = (input.lines().count(), input.lines().next().expect("").len());
+    let input_size = (
+        input.lines().count() as i32,
+        input.lines().next().expect("").len() as i32,
+    );
 
     for (i, line) in input.lines().enumerate() {
         for (j, character) in line.chars().enumerate() {
@@ -14,8 +17,8 @@ fn part_one() {
             }
             antenna_locs
                 .entry(character)
-                .and_modify(|x| x.push((i, j)))
-                .or_insert(vec![(i, j)]);
+                .and_modify(|x| x.push((i as i32, j as i32)))
+                .or_insert(vec![(i as i32, j as i32)]);
         }
     }
 
@@ -24,20 +27,20 @@ fn part_one() {
             for antenna_two in antennas[i + 1..].iter() {
                 for antinode_loc in [
                     (
-                        antenna_one.0 as isize + (antenna_one.0 as isize - antenna_two.0 as isize),
-                        antenna_one.1 as isize + (antenna_one.1 as isize - antenna_two.1 as isize),
+                        antenna_one.0 + (antenna_one.0 - antenna_two.0),
+                        antenna_one.1 + (antenna_one.1 - antenna_two.1),
                     ),
                     (
-                        antenna_two.0 as isize - (antenna_one.0 as isize - antenna_two.0 as isize),
-                        antenna_two.1 as isize - (antenna_one.1 as isize - antenna_two.1 as isize),
+                        antenna_two.0 - (antenna_one.0 - antenna_two.0),
+                        antenna_two.1 - (antenna_one.1 - antenna_two.1),
                     ),
                 ] {
                     if !(antinode_loc.0 < 0
-                        || antinode_loc.0 >= input_size.0 as isize
+                        || antinode_loc.0 >= input_size.0
                         || antinode_loc.1 < 0
-                        || antinode_loc.1 >= input_size.1 as isize)
+                        || antinode_loc.1 >= input_size.1)
                     {
-                        antinode_locs.insert((antinode_loc.0 as usize, antinode_loc.1 as usize));
+                        antinode_locs.insert((antinode_loc.0 as i32, antinode_loc.1 as i32));
                     }
                 }
             }
@@ -47,10 +50,13 @@ fn part_one() {
 }
 
 fn part_two() {
-    let mut antinode_locs: HashSet<(usize, usize)> = HashSet::new();
-    let mut antenna_locs: HashMap<char, Vec<(usize, usize)>> = HashMap::new();
+    let mut antinode_locs: HashSet<(i32, i32)> = HashSet::new();
+    let mut antenna_locs: HashMap<char, Vec<(i32, i32)>> = HashMap::new();
     let input = fs::read_to_string("Day 08/input.txt").expect("");
-    let input_size = (input.lines().count(), input.lines().next().expect("").len());
+    let input_size = (
+        input.lines().count() as i32,
+        input.lines().next().expect("").len() as i32,
+    );
 
     for (i, line) in input.lines().enumerate() {
         for (j, character) in line.chars().enumerate() {
@@ -59,8 +65,8 @@ fn part_two() {
             }
             antenna_locs
                 .entry(character)
-                .and_modify(|x| x.push((i, j)))
-                .or_insert(vec![(i, j)]);
+                .and_modify(|x| x.push((i as i32, j as i32)))
+                .or_insert(vec![(i as i32, j as i32)]);
         }
     }
 
@@ -71,40 +77,39 @@ fn part_two() {
                 antinode_locs.insert(*antenna_two);
                 // first try all harmonics in one direction
                 let mut antinode_loc = (
-                    antenna_one.0 as isize + (antenna_one.0 as isize - antenna_two.0 as isize),
-                    antenna_one.1 as isize + (antenna_one.1 as isize - antenna_two.1 as isize),
+                    antenna_one.0 + (antenna_one.0 - antenna_two.0),
+                    antenna_one.1 + (antenna_one.1 - antenna_two.1),
                 );
                 while !(antinode_loc.0 < 0
-                    || antinode_loc.0 >= input_size.0 as isize
+                    || antinode_loc.0 >= input_size.0
                     || antinode_loc.1 < 0
-                    || antinode_loc.1 >= input_size.1 as isize)
+                    || antinode_loc.1 >= input_size.1)
                 {
-                    antinode_locs.insert((antinode_loc.0 as usize, antinode_loc.1 as usize));
+                    antinode_locs.insert((antinode_loc.0 as i32, antinode_loc.1 as i32));
                     antinode_loc = (
-                        antinode_loc.0 as isize + (antenna_one.0 as isize - antenna_two.0 as isize),
-                        antinode_loc.1 as isize + (antenna_one.1 as isize - antenna_two.1 as isize),
+                        antinode_loc.0 + (antenna_one.0 - antenna_two.0),
+                        antinode_loc.1 + (antenna_one.1 - antenna_two.1),
                     );
                 }
                 // then the other direction
                 antinode_loc = (
-                    antenna_two.0 as isize - (antenna_one.0 as isize - antenna_two.0 as isize),
-                    antenna_two.1 as isize - (antenna_one.1 as isize - antenna_two.1 as isize),
+                    antenna_two.0 - (antenna_one.0 - antenna_two.0),
+                    antenna_two.1 - (antenna_one.1 - antenna_two.1),
                 );
                 while !(antinode_loc.0 < 0
-                    || antinode_loc.0 >= input_size.0 as isize
+                    || antinode_loc.0 >= input_size.0
                     || antinode_loc.1 < 0
-                    || antinode_loc.1 >= input_size.1 as isize)
+                    || antinode_loc.1 >= input_size.1)
                 {
-                    antinode_locs.insert((antinode_loc.0 as usize, antinode_loc.1 as usize));
+                    antinode_locs.insert((antinode_loc.0 as i32, antinode_loc.1 as i32));
                     antinode_loc = (
-                        antinode_loc.0 as isize - (antenna_one.0 as isize - antenna_two.0 as isize),
-                        antinode_loc.1 as isize - (antenna_one.1 as isize - antenna_two.1 as isize),
+                        antinode_loc.0 - (antenna_one.0 - antenna_two.0),
+                        antinode_loc.1 - (antenna_one.1 - antenna_two.1),
                     );
                 }
             }
         }
     }
-    println!("{:?}", antinode_locs);
     println!("{}", antinode_locs.len());
 }
 
